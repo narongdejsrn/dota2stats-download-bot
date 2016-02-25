@@ -9,8 +9,8 @@ from pymongo import MongoClient, ASCENDING
 
 class Main():
     def __init__(self):
-        self.client = MongoClient('localhost', 27017)
-        self.db = self.client.meteor
+        self.client = MongoClient(os.environ['DOKKU_MONGO_DOTA2STATS_PORT_27017_TCP_ADDR'], os.environ['DOKKU_MONGO_DOTA2STATS_PORT_27017_TCP_PORT'])
+        self.db = self.client.dota2stats
         self.matches = self.db.matches
         self.analytics = self.db.analytics
 
