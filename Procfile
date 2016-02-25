@@ -1,1 +1,1 @@
-worker: download.py
+worker: python download.py
