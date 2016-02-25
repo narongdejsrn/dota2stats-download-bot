@@ -25,19 +25,23 @@ class Main():
             print "Something is wrong, try again next round"
             return
         last_sequence_num = 0
-        for match in history.matches(start_at_match_seq_num = sequence_num):
-            last_sequence_num = match.match_seq_num
-            match.herolist = []
-            match.interpret_version = 0
-            for player in match.players:
-                match.herolist.append(player["hero_id"])
-            mdict = match.__dict__
-            mdict.pop("parent", None)
-            try:
-                self.matches.insert_one(mdict)
-                print "Insert match_id %d into db" % match.match_id
-            except:
-                print "Cannot insert match_id %d" % match.match_id
+        try:
+            for match in history.matches(start_at_match_seq_num = sequence_num):
+                last_sequence_num = match.match_seq_num
+                match.herolist = []
+                match.interpret_version = 0
+                for player in match.players:
+                    match.herolist.append(player["hero_id"])
+                mdict = match.__dict__
+                mdict.pop("parent", None)
+                try:
+                    self.matches.insert_one(mdict)
+                    print "Insert match_id %d into db" % match.match_id
+                except:
+                    print "Cannot insert match_id %d" % match.match_id
+        except:
+            print "Something is wrong, try again next round"
+            return
 
         # Update match_sequence_num
         self.preferences.update_one({"type": "settings"}, {"$set": {"match_sequence_num": last_sequence_num + 1}})
