@@ -19,7 +19,11 @@ class Main():
 
     def getMatches(self):
         sequence_num = self.preferences.find_one()["match_sequence_num"]
-        history = MatchHistoryBySequenceNum(self.key)
+        try:
+            history = MatchHistoryBySequenceNum(self.key)
+        except:
+            print "Something is wrong, try again next round"
+            return
         last_sequence_num = 0
         for match in history.matches(start_at_match_seq_num = sequence_num):
             last_sequence_num = match.match_seq_num
