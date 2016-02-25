@@ -15,6 +15,7 @@ class Main():
         self.preferences = self.db.preferences
         # Store key in ~/.steamapi
         self.key = get_key()
+        self.matches.create_index([("match_id", ASCENDING)], unique=True)
 
     def getMatches(self):
         sequence_num = self.preferences.find_one()["match_sequence_num"]
@@ -22,10 +23,15 @@ class Main():
         last_sequence_num = 0
         for match in history.matches(start_at_match_seq_num = sequence_num):
             last_sequence_num = match.match_seq_num
+            match.herolist = []
+            match.interpret_version = 0
+            for player in match.players:
+                match.herolist.append(player["hero_id"])
             mdict = match.__dict__
             mdict.pop("parent", None)
             try:
                 self.matches.insert_one(mdict)
+                print "Insert match_id %d into db" % match.match_id
             except:
                 print "Cannot insert match_id %d" % match.match_id
 
@@ -33,6 +39,10 @@ class Main():
         self.preferences.update_one({"type": "settings"}, {"$set": {"match_sequence_num": last_sequence_num + 1}})
 
 
-print "Welcome to the bot"
+print "Starting the bot to grab matches data from DotA API"
 m = Main()
-m.getMatches()
+schedule.every(1).minutes.do(m.getMatches)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
