@@ -9,7 +9,7 @@ from pymongo import MongoClient, ASCENDING
 
 class Main():
     def __init__(self):
-        self.client = MongoClient('localhost', 3001)
+        self.client = MongoClient('localhost', 27017)
         self.db = self.client.meteor
         self.matches = self.db.matches
         self.analytics = self.db.analytics
@@ -80,7 +80,7 @@ class Main():
         for key, value in hero_data.iteritems():
             if(value["total_match"] < 1):
                 continue
-                
+
             data = self.analytics.find_one({"type": "hero", "hero_id": key})
             if(data):
 

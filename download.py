@@ -9,7 +9,7 @@ from pymongo import MongoClient, ASCENDING
 
 class Main():
     def __init__(self):
-        self.client = MongoClient('localhost', 3001)
+        self.client = MongoClient('localhost', 27017)
         self.db = self.client.meteor
         self.matches = self.db.matches
         self.preferences = self.db.preferences
